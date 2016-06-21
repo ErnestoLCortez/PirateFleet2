@@ -56,53 +56,78 @@ struct Ship {
     }
 
 // TODO: Add custom initializers
-//    init(length: Int) {
-//        self.length = length
-//        self.hitTracker = HitTracker()
-//    }
+    init(length: Int, location: GridLocation, isVertical: Bool) {
+        self.length = length
+        self.location = location
+        self.isVertical = isVertical
+        self.isWooden = false
+        self.hitTracker = HitTracker()
+    }
+    init(length: Int, location: GridLocation, isVertical: Bool, isWooden: Bool) {
+        self.length = length
+        self.location = location
+        self.isVertical = isVertical
+        self.isWooden = isWooden
+        self.hitTracker = HitTracker()
+    }
 }
 
 // TODO: Change Cell protocol to PenaltyCell and add the desired properties
-protocol Cell {
+protocol PenaltyCell {
     var location: GridLocation {get}
-}
-
-// TODO: Adopt and implement the PenaltyCell protocol
-struct Mine: Cell {
-    let location: GridLocation
+    var guaranteesHit: Bool {get}
+    var penaltyText: String {get}
 
 }
 
 // TODO: Adopt and implement the PenaltyCell protocol
-struct SeaMonster: Cell {
+struct Mine: PenaltyCell {
     let location: GridLocation
+    let guaranteesHit: Bool
+    let penaltyText: String
+    init (location: GridLocation, penaltyText: String){
+        self.location = location
+        self.penaltyText = penaltyText
+        self.guaranteesHit = false
+    }
+    init (location: GridLocation, penaltyText: String, guaranteesHit: Bool) {
+        self.location = location
+        self.penaltyText = penaltyText
+        self.guaranteesHit = guaranteesHit
+    }
+}
+
+// TODO: Adopt and implement the PenaltyCell protocol
+struct SeaMonster: PenaltyCell {
+    let location: GridLocation
+    let guaranteesHit = true
+    let penaltyText = "Whoa Nessie!"
 }
 
 class ControlCenter {
     
     func placeItemsOnGrid(human: Human) {
         
-        let smallShip = Ship(length: 2, location: GridLocation(x: 3, y: 4), isVertical: true, isWooden: false, hitTracker: HitTracker())
-        print(smallShip.cells)
+        let smallShip = Ship(length: 2, location: GridLocation(x: 3, y: 4), isVertical: true)
         human.addShipToGrid(smallShip)
         
-        let mediumShip1 = Ship(length: 3, location: GridLocation(x: 0, y: 0), isVertical: false, isWooden: false, hitTracker: HitTracker())
+        let mediumShip1 = Ship(length: 3, location: GridLocation(x: 0, y: 0), isVertical: false, isWooden: true)
         print(mediumShip1.cells)
         human.addShipToGrid(mediumShip1)
         
-        let mediumShip2 = Ship(length: 3, location: GridLocation(x: 3, y: 1), isVertical: false, isWooden: false, hitTracker: HitTracker())
+        let mediumShip2 = Ship(length: 3, location: GridLocation(x: 3, y: 1), isVertical: false, isWooden: true)
         human.addShipToGrid(mediumShip2)
         
-        let largeShip = Ship(length: 4, location: GridLocation(x: 6, y: 3), isVertical: true, isWooden: false, hitTracker: HitTracker())
+        let largeShip = Ship(length: 4, location: GridLocation(x: 6, y: 3), isVertical: true)
         human.addShipToGrid(largeShip)
         
-        let xLargeShip = Ship(length: 5, location: GridLocation(x: 7, y: 2), isVertical: true, isWooden: false, hitTracker: HitTracker())
+        let xLargeShip = Ship(length: 5, location: GridLocation(x: 7, y: 2), isVertical: true)
         human.addShipToGrid(xLargeShip)
         
-        let mine1 = Mine(location: GridLocation(x: 6, y: 0))
+        let mine1 = Mine(location: GridLocation(x: 6, y: 0), penaltyText:"Ka-Boom" )
         human.addMineToGrid(mine1)
         
-        let mine2 = Mine(location: GridLocation(x: 3, y: 3))
+        let mine2 = Mine(location: GridLocation(x: 3, y: 3), penaltyText:"Super Ka-Boom", guaranteesHit: true)
         human.addMineToGrid(mine2)
         
         let seamonster1 = SeaMonster(location: GridLocation(x: 5, y: 6))
