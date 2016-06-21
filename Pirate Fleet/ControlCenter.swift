@@ -19,22 +19,40 @@ struct Ship {
     
 
 // TODO: Add the computed property, cells.
-//    var cells: [GridLocation] {
-//        get {
-//            // Hint: These two constants will come in handy
-//            let start = self.location
-//            let end: GridLocation = ShipEndLocation(self)
-//            
-//            // Hint: The cells getter should return an array of GridLocations.
-//            var occupiedCells = [GridLocation]()
-//
-//        }
-//    }
+    var cells: [GridLocation] {
+        get {
+            // Hint: These two constants will come in handy
+            let start = self.location
+            let end: GridLocation = ShipEndLocation(self)
+            
+            // Hint: The cells getter should return an array of GridLocations.
+            var occupiedCells = [GridLocation]()
+            
+            if isVertical {
+                for y in start.y...end.y {
+                    occupiedCells.append(GridLocation(x: start.x, y: y))
+                }
+            }
+            else {
+                for x in start.x...end.x {
+                    occupiedCells.append(GridLocation(x: x, y: start.y))
+                }
+            }
+            
+            return occupiedCells
+
+        }
+    }
     
     var hitTracker: HitTracker
 // TODO: Add a getter for sunk. Calculate the value returned using hitTracker.cellsHit.
     var sunk: Bool {
-        return false
+        for cell in hitTracker.cellsHit {
+            if cell.1 == false {
+                return false
+            }
+        }
+        return true
     }
 
 // TODO: Add custom initializers
@@ -65,9 +83,11 @@ class ControlCenter {
     func placeItemsOnGrid(human: Human) {
         
         let smallShip = Ship(length: 2, location: GridLocation(x: 3, y: 4), isVertical: true, isWooden: false, hitTracker: HitTracker())
+        print(smallShip.cells)
         human.addShipToGrid(smallShip)
         
         let mediumShip1 = Ship(length: 3, location: GridLocation(x: 0, y: 0), isVertical: false, isWooden: false, hitTracker: HitTracker())
+        print(mediumShip1.cells)
         human.addShipToGrid(mediumShip1)
         
         let mediumShip2 = Ship(length: 3, location: GridLocation(x: 3, y: 1), isVertical: false, isWooden: false, hitTracker: HitTracker())
